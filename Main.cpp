@@ -1,0 +1,362 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<conio.h>
+#include<string.h>
+#define ENTER 13
+
+void login_page();
+
+void customer_dashboard();
+struct Menu find_item(int);
+void bill_generator();
+void admin_login();
+void admin_dashboard();
+void show_menu();
+void add_menu();
+void update_menu_price();
+void view_bills();
+int bill_token_generator();
+
+struct Menu
+	{
+		int item_no;
+		char item_name[255];
+		int item_price;
+		char group[255];
+	};
+struct Menu menu[255];
+
+int main()
+{
+    login_page();
+}
+
+void login_page()
+{
+    int choice;
+    int attempt = 0;
+    
+    dash:
+
+    printf("                            CANTEEN BILLING SYSTEM \n");
+    printf("\n     [1] ADMIN LOGIN");
+    printf("\n     [2] CUSTOMER INTERFACE");
+    printf("\n     [3] Exit");
+    printf("\n");
+    printf("\n     Press 1 for admin login and 2 for customer interface.");
+    
+    top:
+    printf("\n            Your Choice: ");
+    scanf("%d", &choice);
+    
+    system (" CLS ");
+    switch(choice)
+    {
+        case 1:
+            admin_login();
+            break;
+
+        case 2:
+            customer_dashboard();
+            break;
+
+        default:
+        	    attempt++;
+
+                if(attempt < 3)
+                {
+                    printf("Invalid Choice! %d attempts remaining.\n",3 - attempt);
+                    goto top;
+                }
+                else
+                {
+                    printf("Too many invalid attempts!\n");
+                    system ("CLS");
+                    goto dash;
+                }
+    }
+}
+
+void customer_dashboard()
+{
+	printf("CUSTOMER DASHBOARD");
+	bill_generator();
+}
+
+void admin_login()
+{
+	char username[255]="admin";
+	char password[255]="admin";
+	char user_name[255];
+	char pass_word[255];
+	char ch;
+	int i =0;
+	int tries =0;
+	
+	printf("========================");
+	printf("\n    ADMIN LOGIN");
+	printf("\n========================");
+	printf("\n");
+	
+	pass:
+	printf("Username: ");
+	scanf("%s", user_name);
+	printf("Password: ");
+	while((ch=getch())!=13){
+		pass_word[i]=ch;
+		i++;
+		printf("*");
+	}
+	pass_word[i]='\0';
+	system("cls");
+	
+	if(strcmp(user_name,username)==0&&strcmp(pass_word,password)==0)
+	{
+		printf("Login Successful.");
+		system (" CLS ");
+		admin_dashboard();
+	}
+	else {
+		tries++;
+		if(tries < 3)
+                {
+                    printf("Invalid Choice! %d attempts remaining.\n\n",3 - tries);
+                    goto pass;
+                }
+                else
+                {
+                    printf("Too many invalid attempts!\n");
+                    system( "CLS ");
+                    login_page();
+                }
+	}
+}
+
+void admin_dashboard()
+{
+	int choice;
+	printf("========================");
+	printf("\n    ADMIN DASHBOARD");
+	printf("\n========================\n");
+	
+	printf("\n[1] View Menu Prices");
+	printf("\n[2] Update Menu Prices");
+	printf("\n[3] View Bills");
+	printf("\n[4] Logout");
+	printf("\n");
+	printf("Enter your choice: ");
+	top:
+	scanf("%d",&choice);
+	
+	switch(choice)
+	{
+		case 1:
+			show_menu();
+			break;
+		case 2:
+			update_menu_price();
+			break;
+		case 3:
+			view_bills();
+			break;
+		case 4:
+			return;
+		default:
+			printf("Invalid Choice!!");
+			printf("\nChoose again:");
+			goto top;
+	}	
+}
+
+void view_menu_price()
+{
+	system("cls");
+	printf("MENU");
+}
+
+void update_menu_price()
+{
+	system("cls");
+	printf("Update Menu");
+}
+
+void view_bills()
+{
+	system("cls");
+	printf("Bills");
+}
+
+int bill_token_generator()
+{
+	int bill_no =1000;
+	FILE *fp;
+    
+
+    fp = fopen("billno.txt", "r");
+
+    if (fp == NULL)
+    {
+        bill_no = 1000;
+    }
+    else
+    {
+        fscanf(fp, "%d", &bill_no);
+        fclose(fp);
+    }
+
+    bill_no++;
+
+    fp = fopen("billno.txt", "w");
+    fprintf(fp, "%d", bill_no);
+    fclose(fp);
+
+    return bill_no;
+}
+
+void add_menu()
+{
+	int count;
+	int i;
+	
+	printf("Enter the amount of items you want to add in the Menu: ");
+	scanf("%d", &count);
+	printf("\n");
+	
+	for(i = 1;i<=count;i++)
+	{
+		printf("Details of the Item no. %d",i);
+		printf("\n");
+		printf("Enter the Item no: ");
+		scanf("%d", &menu[i].item_no);
+		printf("Enter the Item name: ");
+		scanf("%s", menu[i].item_name);
+		printf("Enter the Item Price: ");
+		scanf("%d", &menu[i].item_price);
+		printf("Enter the Group of item:");
+		scanf("%s", menu[i].group);	
+		printf("\n");
+	}
+	FILE *fp = fopen("MENU.txt","a+");
+	for(i=1;i<=count;i++)
+	{
+		fprintf(fp,"%d %s %d %s\n",menu[i].item_no,menu[i].item_name,menu[i].item_price,menu[i].group);
+		printf("\n");
+	}	
+	fclose(fp);
+	
+}
+
+void show_menu()
+{
+	
+    FILE *fp = fopen("MENU.txt", "r");
+
+struct Menu m;
+
+while(fscanf(fp, "%d %s %d %s",
+             &m.item_no,
+             m.item_name,
+             &m.item_price,
+             m.group) == 4)
+{
+    printf("%d %s %d %d\n",
+           m.item_no,
+           m.item_name,
+           m.item_price,
+           m.group);
+}
+    fclose(fp);
+}
+	
+void bill_generator()
+{
+	int id;
+	
+	show_menu();
+	int sub_total, discount, quantity, net_total, grand_total, tax, bill_no ;
+	char more = 'y';
+	
+	bill_no=bill_token_generator();
+	
+	FILE *fp = fopen("BILL.txt", "a");
+
+    fprintf(fp, "%d ", bill_no);
+    
+    		struct Order{
+			int item_no;
+			char name[255];
+			int quantity;
+			int price;
+			char group[255];
+		};
+		struct Order item[255];
+	
+		int number_of_items; 
+		printf("Enter How many items do you want to add ? ");
+		scanf("%d",&number_of_items);
+		
+		for(int i=0;i<number_of_items;i++)
+		{
+			printf("Enter the Item no: ");
+			scanf("%d",&id);
+			printf("Enter the quantity: ");
+			scanf("%d",&quantity);
+			
+			struct Menu menu = find_item(id);
+			
+			item[i].item_no = menu.item_no;
+			strcpy(item[i].name, menu.item_name);
+			item[i].quantity = quantity;
+			item[i].price = menu.item_price;
+			strcpy(item[i].group,menu.group);
+
+		}
+
+		
+		printf("CANTEEN OF ARYAN");
+		printf("\n----------------");
+		printf("\n                 Canteen Invoice");
+		printf("\n                  Bill no : %d",bill_no);
+		printf("\n---------------------------------");
+		printf("\nITEM    NAME    QUANTITY         PRICE PER UNIT           GROUP");
+		for(int i=0;i<number_of_items;i++)
+		{
+			printf("\n%d       %s          %d                %d          %s",item[i].item_no,item[i].name,item[i].quantity,item[i].price,item[i].group);
+			sub_total += item[i].price;
+		}
+		discount = 0.05*sub_total;
+		net_total = sub_total - discount;
+		tax = 0.05*net_total;
+		grand_total = net_total+tax;
+		
+		printf("\n-------------------------------------");
+		printf("\nSub-Total                             %d",sub_total);
+		printf("\nDiscount @5%                             %d",discount);
+		printf("\n                     ------");
+		printf("\nNet Total                           %d", net_total);
+		printf("\nTax                                  %d", tax);
+		printf("\n-------------------------------------");
+		printf("\nGrand-Total                            %d",grand_total);
+}
+
+
+
+struct Menu find_item(int id)
+{
+	FILE *fp = fopen("MENU.txt", "r");
+    struct Menu menu;
+
+    while(fscanf(fp, "%d %s %d %s",
+                       &menu.item_no,
+                       menu.item_name,
+                       &menu.item_price,
+                       menu.group) == 4)
+    {
+        if(menu.item_no == id)
+        {
+            fclose(fp);
+            return menu;
+        }
+    }
+
+}
