@@ -13,7 +13,6 @@ void admin_login();
 void admin_dashboard();
 void show_menu();
 void add_menu();
-void update_menu_price();
 void view_bills();
 int bill_token_generator();
 
