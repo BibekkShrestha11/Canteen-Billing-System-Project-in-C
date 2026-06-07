@@ -107,6 +107,7 @@ void admin_login()
 	printf("\n");
 	
 	pass:
+	i =0;
 	printf("Username: ");
 	scanf("%s", user_name);
 	printf("Password: ");
