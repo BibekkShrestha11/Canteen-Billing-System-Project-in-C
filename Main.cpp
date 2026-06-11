@@ -122,6 +122,7 @@ void admin_login()
 	if(strcmp(user_name,username)==0&&strcmp(pass_word,password)==0)
 	{
 		printf("Login Successful.");
+		getch();
 		system (" CLS ");
 		admin_dashboard();
 	}
@@ -315,6 +316,12 @@ void bill_generator()
 			scanf("%d",&quantity);
 			
 			struct Menu menu = find_item(id);
+			if(menu.item_no == -1)
+			{
+    			printf("Item not found!\n");
+    			i--;
+    			continue;
+			}
 			
 			item[i].item_no = menu.item_no;
 			strcpy(item[i].name, menu.item_name);
@@ -352,7 +359,7 @@ void bill_generator()
 		printf("\nGrand-Total                                        %.2f",grand_total);
 		printf("\n---------------------------------------------------------------");
 		
-		fprintf(fp, "%[^\n] %d %d %d\n",customer_name, bill_no, sub_total, grand_total);
+		fprintf(fp, "%s %d %d %d\n",customer_name, bill_no, sub_total, grand_total);
 		fclose(fp);
 		
 		printf("\n\nThANK YOU!!");
@@ -390,8 +397,11 @@ struct Menu find_item(int id)
             return menu;
         }
     }
-
+    fclose(fp);    
+	menu.item_no = -1;
+    return menu;
 }
+
 void view_bills()
 {
     FILE *fp = fopen("BILL.txt", "r");
@@ -402,16 +412,17 @@ void view_bills()
         return;
     }
 
-    int token, subtotal, grandtotal;
+    int token, subtotal;
+    float grandtotal;
 	char customer[255];
 
     printf("\n================ ALL BILLS ================\n");
     printf("TOKEN\tSUBTOTAL\tGRAND TOTAL\n");
     printf("------------------------------------------\n");
 
-    while(fscanf(fp, "%[^\n] %d %d %d",customer, &token, &subtotal, &grandtotal) == 4)
+    while(fscanf(fp, "%s %d %d %.2f",customer, &token, &subtotal, &grandtotal) == 4)
     {
-        printf("%[^\n]\t%d\t%d\t\t%d\n", customer, token, subtotal, grandtotal);
+        printf("%s\t%d\t%d\t\t%d\n", customer, token, subtotal, grandtotal);
     }
 
     fclose(fp);
