@@ -2,3 +2,4 @@
 2 Burger 150 FastFood
 3 Coke 100 Beverage
 4 Noodles 90 FastFood
+5 Thukpa 550 HotItem

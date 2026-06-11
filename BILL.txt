@@ -1,8 +1,4 @@
-Bibek 1001 0 0
-Bibek 1002 150 157
-Bibek 1003 0 0
-Bibek Shrestha 1005 150 157
-Bibek Huhu 1006 150 156
-Shree 1007 1100 0
-Bibek Shrestha 1008 540 1610612736
-Bibek  1009 550 0
+Bibek Shrestha|1007|150|156.75
+Dipdarshan|1009|500|522.50
+Sumesh Sulu|1010|450|470.25
+Aryan |1011|1050|1097.25

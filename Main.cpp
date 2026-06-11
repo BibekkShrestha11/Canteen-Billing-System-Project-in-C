@@ -5,7 +5,6 @@
 #define ENTER 13
 
 void login_page();
-
 void customer_dashboard();
 struct Menu find_item(int);
 void bill_generator();
@@ -28,6 +27,7 @@ struct Menu menu[255];
 int main()
 {
     login_page();
+    return 0;
 }
 
 void login_page()
@@ -75,6 +75,7 @@ void login_page()
                 else
                 {
                     printf("Too many invalid attempts!\n");
+                    getch();
                     system ("CLS");
                     goto dash;
                 }
@@ -107,11 +108,13 @@ void admin_login()
 	printf("\n");
 	
 	pass:
-	i =0;
+		
+	i=0;
 	printf("Username: ");
 	scanf("%s", user_name);
 	printf("Password: ");
-	while((ch=getch())!=13){
+	while((ch=getch())!=13)
+	{
 		pass_word[i]=ch;
 		i++;
 		printf("*");
@@ -154,6 +157,7 @@ void admin_dashboard()
 	printf("\n[3] Logout");
 	printf("\n");
 	printf("Enter your choice: ");
+	
 	top:
 	scanf("%d",&choice);
 	
@@ -243,15 +247,14 @@ void add_menu()
 		printf("\n");
 	}	
 	fclose(fp);
-	
 }
 
 void show_menu()
 {
-	
     FILE *fp = fopen("MENU.txt", "r");
 
 struct Menu m;
+
 	printf("                            ***************\n");
 	printf("                                 MENU");
 	printf("\n                            ***************\n");
@@ -259,18 +262,10 @@ struct Menu m;
 	printf("\n");
 	printf("\nITEM          NAME           PRICE PER UNIT                   GROUP");
 	printf("\n----          ----           --------------                   ------");
-while(fscanf(fp, "%d %s %d %s",
-             &m.item_no,
-             m.item_name,
-             &m.item_price,
-             m.group) == 4)
+	while(fscanf(fp, "%d %s %d %s",&m.item_no,m.item_name,&m.item_price,m.group) == 4)
 {
 
-    printf("\n  %-5d       %-10s           %-15d          %-20s\n",
-           m.item_no,
-           m.item_name,
-           m.item_price,
-           m.group);
+    printf("\n  %-5d       %-10s           %-15d          %-20s\n",m.item_no,m.item_name,m.item_price,m.group);
 }
     fclose(fp);
 }
@@ -285,7 +280,6 @@ void bill_generator()
 	float discount,tax,grand_total,net_total;
 	char customer_name[255];
 	int bill_no;
-	char more = 'y';
 	
 	bill_no=bill_token_generator();
 	
@@ -301,7 +295,7 @@ void bill_generator()
 		};
 		struct Order item[255];
 	
-		int number_of_items; 
+		int number_of_items;  
 		printf("\n");
 		printf("Enter your name for the invoice: ");
 		scanf(" %[^\n]", customer_name);
@@ -359,7 +353,7 @@ void bill_generator()
 		printf("\nGrand-Total                                        %.2f",grand_total);
 		printf("\n---------------------------------------------------------------");
 		
-		fprintf(fp, "%s %d %d %d\n",customer_name, bill_no, sub_total, grand_total);
+		fprintf(fp, "%s|%d|%d|%.2f\n",customer_name, bill_no, sub_total, grand_total);
 		fclose(fp);
 		
 		printf("\n\nThANK YOU!!");
@@ -374,7 +368,6 @@ void bill_generator()
 			system ("CLS");
 			goto top;
 		}
-
 		
 }
 
@@ -411,19 +404,17 @@ void view_bills()
         printf("No bill records found!\n");
         return;
     }
-
     int token, subtotal;
-    float grandtotal;
+    float grandtotal=0;
 	char customer[255];
 
-    printf("\n================ ALL BILLS ================\n");
-    printf("TOKEN\tSUBTOTAL\tGRAND TOTAL\n");
-    printf("------------------------------------------\n");
+    printf("\n================ ALL BILLS ========================\n");
+    printf("CUSTOMER\tTOKEN\tSUBTOTAL\tGRAND TOTAL\n");
+    printf("---------------------------------------------------\n");
 
-    while(fscanf(fp, "%s %d %d %.2f",customer, &token, &subtotal, &grandtotal) == 4)
+    while(fscanf(fp, "%[^|]|%d|%d|%f",customer, &token, &subtotal, &grandtotal) == 4)
     {
-        printf("%s\t%d\t%d\t\t%d\n", customer, token, subtotal, grandtotal);
+        printf("%s\t%d\t%d\t\t%.2f\n", customer, token, subtotal, grandtotal);
     }
-
     fclose(fp);
 }
