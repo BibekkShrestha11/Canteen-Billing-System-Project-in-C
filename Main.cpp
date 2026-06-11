@@ -148,10 +148,9 @@ void admin_dashboard()
 	printf("\n    ADMIN DASHBOARD");
 	printf("\n========================\n");
 	
-	printf("\n[1] View Menu Prices");
-	printf("\n[2] Update Menu Prices");
-	printf("\n[3] View Bills");
-	printf("\n[4] Logout");
+	printf("\n[1] Add Menu Item");
+	printf("\n[2] View Bills");
+	printf("\n[3] Logout");
 	printf("\n");
 	printf("Enter your choice: ");
 	top:
@@ -161,22 +160,13 @@ void admin_dashboard()
 	{
 		case 1:
 			system ("cls");
-			show_menu();
-			printf("Press any character to return. ");
-			getch();
-			printf("\n");
-			system ("cls");
-			admin_dashboard();
-			
-		case 2:
-			system ("cls");
 			add_menu();
 			printf("Press any character to return. ");
 			getch();
 			printf("\n");
 			system ("cls");
 			admin_dashboard();
-		case 3:
+		case 2:
 			system("cls");
 			view_bills();
 			printf("Press any character to return. ");
@@ -184,7 +174,7 @@ void admin_dashboard()
 			printf("\n");
 			system ("cls");
 			admin_dashboard();
-		case 4:
+		case 3:
 			system("cls");
 			login_page();
 		default:
@@ -290,7 +280,9 @@ void bill_generator()
 	top:
 		
 	show_menu();
-	int sub_total=0, discount, quantity, net_total, grand_total, tax ;
+	int sub_total=0, quantity;
+	float discount,tax,grand_total,net_total;
+	char customer_name[255];
 	int bill_no;
 	char more = 'y';
 	
@@ -310,6 +302,8 @@ void bill_generator()
 	
 		int number_of_items; 
 		printf("\n");
+		printf("Enter your name for the invoice: ");
+		scanf(" %[^\n]", customer_name);
 		printf("Enter How many items do you want to add ? ");
 		scanf("%d",&number_of_items);
 		
@@ -330,11 +324,12 @@ void bill_generator()
 
 		}
 
-		
+		printf("\n---------------------------------------------------------------\n");
 		printf("                       CANTEEN OF ARYAN");
 		printf("\n---------------------------------------------------------------");
 		printf("\n                       CANTEEN INVOICE");
-		printf("\n                                                Bill no : %d",bill_no);
+		printf("\nCustomer Name: %s                                 ",customer_name);
+		printf("\n                                                 Bill no: %d",bill_no);
 		printf("\n---------------------------------------------------------------");
 		printf("\nITEM   NAME        QUANTITY   PRICE PER UNIT    GROUP");
 		for(int i=0;i<number_of_items;i++)
@@ -344,19 +339,20 @@ void bill_generator()
 		}
 		discount = 0.05*sub_total;
 		net_total = sub_total - discount;
-		tax = 0.05*net_total;
+		tax = 0.10*net_total;
 		grand_total = net_total+tax;
 		
 		printf("\n---------------------------------------------------------------");
 		printf("\nSub-Total                                          %d",sub_total);
-		printf("\nDiscount @5                                        %d",discount);
+		printf("\nDiscount @5                                        %.2f",discount);
 		printf("\n                                                 ------");
-		printf("\nNet Total                                          %d", net_total);
-		printf("\nTax                                                %d", tax);
+		printf("\nNet Total                                          %.2f", net_total);
+		printf("\nTax@10                                             %.2f", tax);
 		printf("\n---------------------------------------------------------------");
-		printf("\nGrand-Total                                        %d",grand_total);
+		printf("\nGrand-Total                                        %.2f",grand_total);
+		printf("\n---------------------------------------------------------------");
 		
-		fprintf(fp, "%d %d %d\n", bill_no, sub_total, grand_total);
+		fprintf(fp, "%[^\n] %d %d %d\n",customer_name, bill_no, sub_total, grand_total);
 		fclose(fp);
 		
 		printf("\n\nThANK YOU!!");
@@ -407,14 +403,15 @@ void view_bills()
     }
 
     int token, subtotal, grandtotal;
+	char customer[255];
 
     printf("\n================ ALL BILLS ================\n");
     printf("TOKEN\tSUBTOTAL\tGRAND TOTAL\n");
     printf("------------------------------------------\n");
 
-    while(fscanf(fp, "%d %d %d", &token, &subtotal, &grandtotal) == 3)
+    while(fscanf(fp, "%[^\n] %d %d %d",customer, &token, &subtotal, &grandtotal) == 4)
     {
-        printf("%d\t%d\t\t%d\n", token, subtotal, grandtotal);
+        printf("%[^\n]\t%d\t%d\t\t%d\n", customer, token, subtotal, grandtotal);
     }
 
     fclose(fp);
